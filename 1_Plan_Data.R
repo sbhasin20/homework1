@@ -1,6 +1,10 @@
 #########################################################################
 ## Read in enrollment data for january of each year
 #########################################################################
+install.packages("usethis")
+install.packages("tidyverse")
+library(tidyverse)
+
 
 for (y in 2007:2015) {
   ## Basic contract/plan information
@@ -83,5 +87,16 @@ for (y in 2008:2015) {
   full.ma.data <- rbind(full.ma.data,read_rds(paste0("data/output/ma_data_",y,".rds")))
 }
 
-write_rds(full.ma.data,"full_ma_data.rds")
+write_rds(full.ma.data,"data/output/full_ma_data.rds")
 sapply(paste0("ma_data_", 2007:2015, ".rds"), unlink)
+
+#Homework 1 
+
+#Enrollment Data 
+
+#1. There are 5853 observations in my current data set. 
+#2 There are 9 different plan_type in the data
+
+count(plan_type)
+#3 
+
