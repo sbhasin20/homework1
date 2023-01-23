@@ -94,9 +94,15 @@ sapply(paste0("ma_data_", 2007:2015, ".rds"), unlink)
 
 #Enrollment Data 
 
-#1. There are 5853 observations in my current data set. 
-#2 There are 9 different plan_type in the data
+#1. There are 19126783 observations in my current data set. 
 
-count(plan_type)
+full.ma.data %>% count(plan_type)
+
+#2 There are 5,587,057 different plan_type in the data
+
+knitr::kable(plan.data, col.names=c("2007","2008", "2009","2010","2011","2012","2013","2014","2015"),
+             type="html", caption = "Plan Count by Year", booktabs = TRUE)
 #3 
+
+
 
