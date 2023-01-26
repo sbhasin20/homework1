@@ -1,0 +1,121 @@
+---
+title: "Bhasin-S-hw1-2"
+output: pdf_document
+date: "2023-01-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+#########################################################################
+## Read in enrollment data for january of each year
+#########################################################################
+install.packages("usethis")
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("dplyr")
+library(dplyr)
+install.packages("magrittr")
+library(magrittr)
+
+
+#Enrollment Data 
+
+#1. 
+
+tot.obs <- as.numeric(count(full.ma.data %>% ungroup()))
+
+#There are 19,126,783 observations in my current data set. 
+
+#2 There are 27 different plan_type in the data
+
+plan.type.table <- full.ma.data %>% group_by(plan_type) %>% count() %>% arrange(-n)
+
+#3 
+
+plan.type.year1 <- full.ma.data %>% group_by(plan_type, year) %>% count() %>% arrange(year,-n) %>% filter(plan_type, NA)
+plan.type.year1 <- pivot_wider(plan.type.year1, names_from = "year", values_from = "n", names_prefix = "Count_")
+
+
+final.data <- final.plans %>%
+  inner_join(contract.service.area %>% 
+               select(contractid, fips, year), 
+             by=c("contractid", "fips", "year")) %>%
+  filter(!is.na(avg_enrollment))
+  
+#4
+
+final.plans <- full.ma.data %>%
+  filter(snp= 'No' & eghp == "No" &
+  (planid < 800 | planid >= 900))
+
+final.data <- final.plans %>%
+  inner_join(contract.service.area %>% 
+               select(contractid, fips, year), 
+             by=c("contractid", "fips", "year")) %>%
+  filter(!is.na(avg_enrollment))
+
+final.data.pen <- final.data %>% 
+  left_join (ma.penetration.data %>% ungroup()) %>% 
+               rename(state_long=state, country_long)
+              
+              
+plan.type.year2 <- final.plans %>% group_by(plan_type, year) %>% count() %>% arrange(year,-n) %>% filter(plan_type, NA)
+plan.type.year2 <- pivot_wider(plan.type.year2, names_from = "year", values_from = "n", names_prefix = "Count_")
+
+#5 
+
+final.data <- final.plans %>%
+  inner_join(contract.service.area %>% 
+             select(contractid, fips, year), 
+           by=c("contractid", "fips", "year")) %>%
+  filter(!is.na(avg_enrollment))
+
+
+#enrollment figure 
+
+fig.avg.enrollment <- final.data %>%
+  group_by(flips, year) %>%
+  select(flips, year, avg_enrollment) %>%
+  summarize(all_enroll=sum(avg_enrollment)) %>%
+  ggplot2(aes(x=as, factor(year), y=all_enroll)) +
+  stat_summary(fun.y="mean", geom = "bar") +
+  labs(
+    x= "Year",
+    y= "People",
+    title =""
+  ) + scale_y_continous(labels=comma) +
+  theme_bw()
+
+rm(list =c("full.ma.data, "contract.info)) # basically drop everything in inviorment except fig.avg. enroll + plan.type,table + year1
+
+
+#7 I think we need to use the ggplot2 function to create this graph. Before I do this, I need to eliminate the errors I am getting in the previous codes. 
+
+
+#8 I think we dropped it since there were replciates when we merged the dataset
+
+#9 The beneficiary is not making a profit since they are charging the expect value of the cost. 
+
+#10 It has been very challenging to work with this data. I think getting the tables was a learnign experience since you had to make sure R knew exactly what data to put where. Also, it was aggervating when the errors would come, then I would try to fix them and they would keep occuring. 

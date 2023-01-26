@@ -4,6 +4,11 @@
 install.packages("usethis")
 install.packages("tidyverse")
 library(tidyverse)
+install.packages("dplyr")
+library(dplyr)
+install.packages("magrittr")
+library(magrittr)
+
 
 
 for (y in 2007:2015) {
@@ -90,25 +95,89 @@ for (y in 2008:2015) {
 write_rds(full.ma.data,"data/output/full_ma_data.rds")
 sapply(paste0("ma_data_", 2007:2015, ".rds"), unlink)
 
-#Homework 1 
+#Homework 1 #make sure you have all the packages 
 
 #Enrollment Data 
 
-#1. There are 19,126,783 observations in my current data set. 
+#1. 
 
-full.ma.data %>% count(plan_type)
+tot.obs <- as.numeric(count(full.ma.data %>% ungroup()))
 
-#2 There are 5,847,057 different plan_type in the data
+#There are 19,126,783 observations in my current data set. 
 
-file.path(plan.data)
+#2 There are 27 different plan_type in the data
 
-plan.data <- read.csv("plan.data.csv")
-plan_type <- plan.data$plan_type
-
-knitr::kable(plan.type, col.names=c("2010","2011","2012","2013","2014","2015"),
-             type="html", caption = "Plan Count by Year", booktabs = TRUE)
+plan.type.table <- full.ma.data %>% group_by(plan_type) %>% count() %>% arrange(-n)
 
 #3 
 
+plan.type.year1 <- full.ma.data %>% group_by(plan_type, year) %>% count() %>% arrange(year,-n) %>% filter(plan_type, NA)
+plan.type.year1 <- pivot_wider(plan.type.year1, names_from = "year", values_from = "n", names_prefix = "Count_")
+
+#view after 
+
+final.data <- final.plans %>%
+  inner_join(contract.service.area %>% 
+               select(contractid, fips, year), 
+             by=c("contractid", "fips", "year")) %>%
+  filter(!is.na(avg_enrollment))
+  
+#4
+
+final.plans <- full.ma.data %>%
+  filter(snp= 'No' & eghp == "No" &
+  (planid < 800 | planid >= 900))
+
+final.data <- final.plans %>%
+  inner_join(contract.service.area %>% 
+               select(contractid, fips, year), 
+             by=c("contractid", "fips", "year")) %>%
+  filter(!is.na(avg_enrollment))
+
+final.data.pen <- final.data %>% 
+  left_join( ma.penetration.data %>% ungroup() %>%)
+              rename(state_long=state, country_long)
+              
+              
+plan.type.year2 <- final.plans %>% group_by(plan_type, year) %>% count() %>% arrange(year,-n) %>% filter(plan_type, NA)
+plan.type.year2 <- pivot_wider(plan.type.year2, names_from = "year", values_from = "n", names_prefix = "Count_")
+#view after 
+
+#5 
+
+final.data <- final.plans %>%
+  inner_join(contract.service.area %>% 
+             select(contractid, fips, year), 
+           by=c("contractid", "fips", "year")) %>%
+  filter(!is.na(avg_enrollment))
 
 
+#enrollment figure 
+
+fig.avg.enrollment <- final.data %>%
+  group_by(flips, year) %>%
+  select(flips, year, avg_enrollment) %>%
+  summarize(all_enroll=sum(avg_enrollment)) %>%
+  ggplot2(aes(x=as, factor(year), y=all_enroll)) +
+  stat_summary(fun.y="mean", geom = "bar") +
+  labs(
+    x= "Year"
+    y= "People"
+    title =""
+  ) + scale_y_continous(labels=comma) +
+  theme_bw()
+
+rm(list=c("full.ma.data, "contract.info"")) # basically drop everything in inviorment except fig.avg. enroll + plan.type,table + year1
+
+#save.image("Hw1_workspace.Rdata") #save it as an image 
+
+
+#7 
+
+
+
+#8 I think we dropped it since there were replciates when we merged the dataset
+
+#9 The beneficiary is not making a profit since they are charging the expect value of the cost. 
+
+#10 It has been very challenging to work with this data. I think getting the tables was a learnign experience since you had to make sure R knew exactly what data to put where. Also, it was aggervating when the errors would come, then I would try to fix them and they would keep occuring. 
