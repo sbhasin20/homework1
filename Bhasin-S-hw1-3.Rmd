@@ -1,0 +1,109 @@
+---
+title: "Bhasin-S-hw1-3"
+author: "Sachi Bhasin"
+date: "2023-01-29"
+output: pdf_document
+---
+
+```{r setup, warning = FALSE, echo = FALSE, message = FALSE}
+load("Hw1_workspace.Rdata")
+library(lemon)
+knit_print.data.frame <- lemon_print
+library(tidyverse)
+library(readr)
+library(imputeTS)
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning = FALSE, fig.width = 16/2, fig.height = 9/2, tidy.opts=list(width.cutoff=60), tidy=TRUE)
+
+```
+
+```{r, include=FALSE, echo=FALSE}
+load("Hw1_workspace.Rdata")
+```
+
+
+\vspace{.2in}
+
+#Question 1 
+
+There are `r format(tot.obs, big.mark=",")` observations in the data set, which means there are that many different combinations of contracts, plans, countries, and years in the data set. 
+
+\vspace{.2in}
+
+#Question 2
+
+There are `r nrow(plan.type.table)` different plan_types in the data. One of them is "NA" so there are 26 different plan_types in data set. 
+
+# Question 3 
+
+```{r plantype1, echo=F, eval=T, render = lemon_print}
+#3
+
+plan.type.year1
+
+```
+
+# Question 4
+
+```{r plantype2, echo=F, eval=T, render = lemon_print}
+
+plan.type.year2
+```
+
+
+#Question 5
+
+```{r avgenrollment,echo=FALSE, include=T, eval=T, fig.cap="Average Enrollments per County", fig.width=4}
+
+fig.avg.enrollment
+```
+
+
+
+
+
+#Question 6
+
+```{r echo=FALSE}
+
+final.data3
+
+```
+
+
+#Question 7
+
+
+```{r echo=FALSE}
+final_data2
+```
+# Question 8 
+
+We dropped the “800-series” plans because they are offered by employers and union group sponsors. Therefore, they mostly represent Employer Group Wavier Plans, not Medicare. 
+
+#Question 9 
+
+So many plans charge a 0 dollar premium because government funding helps the insurance companies offer Medicare plans with no premiums. Most people qualify for premium-free Part A, so they have a 0 dollar premium, whereas Part B has a premium. For the beneficiary, it means that they do not have to pay a monthly cost for medicare if they stick to Plan A, which does not include some doctors’ services, outpatient care, medical supplies, and preventive services unlike Plan B. 
+
+#Question 10 
+
+My experience working with these data sets were very challenging. I learned how to create graphs in R as well as the importance of being patient. Several things aggravated me but trying to figure out how to get the R markdown was a struggle. 
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r }
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
